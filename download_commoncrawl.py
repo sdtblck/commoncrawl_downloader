@@ -29,6 +29,7 @@ def parse_args():
 args = parse_args()
 blocks_to_download = args.blocks.split(',')
 mode = args.mode
+langs = args.filter_langs
 num_threads = int(mp.cpu_count())
 
 def yes(x):
@@ -122,7 +123,7 @@ def html_to_text(args):
                 html_no_ctrl_chars = ''.join([l for l in html if unicodedata.category(l)[0] not in ['C',]])
                 _,_,details = cld2.detect(html_no_ctrl_chars)
 
-            if details[0][1] in args.filter_langs:
+            if details[0][1] in langs:
                 meta = {
                     'primary_language': details[0][1],
                     'lang_detector': 'pycld2',
