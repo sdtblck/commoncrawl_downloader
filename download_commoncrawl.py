@@ -12,21 +12,26 @@ import os
 import fasttext
 import trafilatura
 import collections
-import pybloomfilter
 import zstd
 import math
-from textwrap import wrap
-import json
 import abc
-
-
-mode = 'justext'
-
-
-blocks_to_download = sys.argv[1].split(',')
-num_threads = int(os.environ['NUM_CORES'])
-
 import re
+import argparse
+
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("blocks", type=str, default="0,1,2", help="blocks to download")
+    parser.add_argument("--mode", type=str, default="justext", help="extractor to use")
+    parser.add_argument("--filter_langs", type=str, nargs="+", default=["de"], help="keep documents with selected primary languages")
+    return parser.parse_args()
+
+args = parse_args()
+blocks_to_download = args.blocks.split(',')
+mode = args.mode
+num_threads = int(mp.cpu_count())
+
+
 def clean_for_bloom(x):
     x = re.sub(r'\d', '#', x.lower().strip())
     return x
@@ -84,8 +89,8 @@ import pycld2 as cld2
 import justext
 import lxml
 
-
-langdet = fasttext.load_model("lid.176.bin") 
+if mode == "trafilatura":
+    langdet = fasttext.load_model("lid.176.bin")
 
 
 # todo: make HtmlExtractor class to seperate justext and trafilatura logic
@@ -208,4 +213,4 @@ def download(blocks, html_to_text, keep_doc, hooks):
 
 
 if __name__ == '__main__':
-    download(blocks_to_download, html_to_text, keep_doc, [ArchiveHook()])
+    download(blocks_to_download, html_to_text, True, [ArchiveHook()])
