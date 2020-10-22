@@ -122,9 +122,9 @@ def html_to_text(args):
                 html_no_ctrl_chars = ''.join([l for l in html if unicodedata.category(l)[0] not in ['C',]])
                 _,_,details = cld2.detect(html_no_ctrl_chars)
 
-            if details[0][1] == 'en':
+            if details[0][1] in args.filter_langs:
                 meta = {
-                    'primary_language': 'en',
+                    'primary_language': details[0][1],
                     'lang_detector': 'pycld2',
                     'lang_detector_extra_info': details,
                     'extractor': 'justext',
