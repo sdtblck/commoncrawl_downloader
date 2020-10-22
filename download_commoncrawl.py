@@ -31,6 +31,8 @@ blocks_to_download = args.blocks.split(',')
 mode = args.mode
 num_threads = int(mp.cpu_count())
 
+def yes(x):
+    return True
 
 def clean_for_bloom(x):
     x = re.sub(r'\d', '#', x.lower().strip())
@@ -213,4 +215,4 @@ def download(blocks, html_to_text, keep_doc, hooks):
 
 
 if __name__ == '__main__':
-    download(blocks_to_download, html_to_text, True, [ArchiveHook()])
+    download(blocks_to_download, html_to_text, yes, [ArchiveHook()])
